@@ -1,0 +1,102 @@
+Deployment
+- a k8s object that defines a desired state for a replicaset (a set of replica pods). The
+  deployment controller seeks to maintain the desired state by creating, deleting, and 
+  replacing pods with new configurations
+
+A deployments desired state includes:
+
+Replicas
+- The number of replica pods deployment will seek to maintain
+
+Selector
+- A label selector used to identify the replica pods managed by the deployment
+
+Template
+- A pod definition used to create replica pods
+
+Use cases
+- easily scale an app up or down by changing the number of replicas
+- perform rolling updates to deploy a new software version
+- roll back to a previous software version
+
+---
+
+Scaling
+- refers to dedicating more (or fewer) resources to an app in order to meet changing needs.
+- k8s deployments are very useful in horizontal scaling, which involves changing the number
+  of containers running an app
+
+Deployment Scaling
+- the deployments replicas setting determines how many replicas are desired in its desired
+  desired state. If the replicas number is changed, replica pods will be created or deleted
+  to satisfy the new number
+
+CMDS:
+
+- Scale deployments
+  # kubectl scale deployment.v1.apps/{deployment-name}.yml --replicas=5
+  # kubectl edit deployment {deployment-name}.yml (edit replicas under spec)
+  # edit number of replicas in the deployment.yml file and apply changes
+
+---
+
+Rolling update
+- allow you to make changes to a deployments pods at a controlled rate, gradually replacing
+  old pods with new pods. This allows you to update your Pods without incurring downtime
+
+Rollback
+- if an update to a deployment causes a problem, you can roll back the deployment to a
+  previous working state
+
+CMDS:
+
+- Rolling an update
+  # kubectl edit deployment {deploymen-name} under spec, template, spec, update the image
+  version (changes are immediately applied)
+  # kubectl set image deployment/{deployment-name} nginx=nginx:broken --record
+
+- View rollout status
+  # kubectl rollout status deployment.v1.apps/{deployment-name}
+
+- View rollout history (to see actual cmd that ran)
+  # kubectl rollout history deployments.v1.apps/{deployment-name}
+
+- Undo a rollout
+  # kubectl rollout undo deployments.v1.apps/{deployment-name} --to-revision=1
+  (kubectl rollout history provides the revision versions) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

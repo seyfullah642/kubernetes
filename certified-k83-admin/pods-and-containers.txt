@@ -1,0 +1,119 @@
+Application Configuration
+- When running apps in k8s, you may want to pass dynamic values to your apps at runtime
+  to control how they behave. This is known as app config
+- Two primary ways to store app config data. ConfigMaps and Secrets
+
+ConfigMaps
+- stores data in the form of a dict. ConfigMap data can be passed to your container
+  apps
+
+Secrets
+- similar to configmaps but are designed to store sensitive data, such as passwords or
+  API keys, more securely. They are created and used similarly to configmaps
+
+Environment Variables
+- A way to pass your secrets or configmaps data to your containers. These will be visible
+  to you container process at runtime
+
+Configuration Volumes
+- Config data from configmaps and secrets can also be passed to containers as mounted
+  volumes. This will cause the config data to appear as files available to the container
+  file system
+
+CMDS:
+
+- Create a configmap
+  # kubectl create -f {configmap-yaml}
+
+- Describe a configmap
+  # kubectl describe configmap my-configmap
+
+- Create a secret - values must be in base64 format
+  # echo -n "secret" | base64 (copy output and put it in the secret yaml file)
+  # kubectl create -f my-secret.yml
+
+---
+
+Resource Requests
+- allow you to define an of resources (CPU or memory) you expect the container will use.
+  This allows k8s scheduler to avoid scheduling pods on nodes that don't have enough
+  resources
+
+Resource Limits
+- provides a way for you to limit the amount of resources your container can use. Container
+  runtime is responsible for enforcing this and different container runtimes do this
+  differently
+
+---
+
+Container Health
+- Actively monitoring container health
+
+Liveness Probes
+- allow you to automatically determine whether or not a container app is in a heathly
+  state
+- By default, k8s will only consider a container to be "down" if the container process
+  stops
+- Liveness probes allow you to customize this detection mechanism and make it more
+  sophisticated
+
+Startup Probes
+- similar to liveness probes. These probes run at container startup and stop running once
+  they succeed.
+- Essentially used to detect if the app has successfully started up
+
+Readiness Probes
+- used to determine when a container is ready to accept requests
+- similar to startup probes
+- Use this probe to prevent any traffic until container is up and running
+
+---
+
+Multi-Container Pod
+- A pod with more then one container
+- Containers share resources such as network and storage. They also interact with one
+  another, working together to provide functionality
+
+Best Practice
+- Keep containers in separate pods, unless they to share resources
+
+---
+
+Init Containers
+- containers that run once during the startup process of a pod. A pod can have any number
+  of init containers, and they will each run once (in order) to completion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+Namespace
+- A way to separate and organize your objects in a k8s cluster
+
+CMDS:
+
+- Create a namespace
+  # kubectl create namespace {name}
+
+- Get list of all namespace
+  # kubectl get namespace
+
+- Get list of a namespace
+  # kubectl get namespace {name}
+
+- Get list of pods in all namespaces
+  # kubectl get pods --all-namespaces

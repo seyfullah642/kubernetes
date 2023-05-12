@@ -1,0 +1,81 @@
+Kubectl
+- is a cmd-line tool that allows you to interact with k8s. It uses k8s api to communicate with the cluster
+  and carry out your cmds
+- Declarative define objects using yaml or json
+- Imperative define objects using kubectl cmds and flags
+
+CMDS:
+
+- List objects
+  # kubectl get pods {pod-name}
+
+- Detailed info on objects
+  # kubectl describe pod {pod-name}
+
+- Create objects
+  # kubectl create
+
+- Modify existing or create new object
+  # kubectl apply -f {file.yml}
+
+- Delete objects
+  # kubectl delete
+
+- Run cmds inside a container
+  # kubectl exec {pod-name} -c {container-name} -- {cmd}
+
+---
+
+RBAC (role based access control)
+- allows you to control what users are allowed to do and access within your cluster
+- two role types. Roles and ClusterRoles
+- RoleBinding and ClusterRoleBinding are objects that connect Roles and ClusterRoles to users
+
+Roles
+- define permissions within a particular namespace
+
+ClusterRoles
+- defines cluster-wide permissions not specific to a single namespace.
+
+CMDS:
+
+- Apply role/rolebinding created via yaml file
+  # kubectl apply -f {yaml-file}
+
+---
+
+Service account
+- an account used by container processes within pods to authenticate with k8s api
+- if pods need to communicate with k8s api, you can use service accounts to control
+  their access
+
+CMDS:
+
+- Create a service account
+  # kubectl create -f {service-account-yaml}
+  # kubectl create sa {service-account-yaml} -n default
+
+- Get service accounts
+  # kubectl get sa
+
+- Get additional info on sa
+  # kubectl describe sa {service-account}
+
+---
+
+Pod Resource Usage
+- Kubernetes Metrics Server
+
+CMDS:
+
+- Install KMS addon
+  # kubectl apply -f {https-link-to-KMS}
+
+- Query apis directly
+  # kubectl get --raw /apis/metric.k8s.io/
+
+- Get data/metrics on pods
+  # kubectl top pod
+  # kubectl top pod --sort-by cpu
+  # kubectl top pod --selector app=metric-test
+  # kubectl top node

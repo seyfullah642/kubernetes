@@ -1,0 +1,51 @@
+# Get list of nodes
+# kubectl get nodes
+
+# Get list of pods
+# kubectl get pods
+
+# Get info on specific pod
+# kubectl get pod web-frontend
+
+# Delete a pod
+# kubectl delete pod web-frontend
+
+# Create a new pod
+# kubectl create -f web-frontend.yml
+
+# List all pods in ps output format with more information (such as node name)
+# kubectl get pods -o wide
+
+# Get logs for a specific container
+# kubectl logs nginx
+
+# Get Deployment info
+# kubectl get deployment
+
+# Get Service info
+# kubectl get service
+
+# Run a command from the container
+# kubectl exec busybox -- curl -s store-products
+
+# Create a namespace. This helps better organize projects
+# kubectl create namespace robot-shop
+
+# Deploy app into cluster within the namespace
+# kubectl -n robot-shop create -f ~/robot-shop/K8s/descriptors/
+
+# Get list of pods within a specific namespace
+# kubectl get pods -n robot-shop
+
+# Watch realtime pods being deployed to the cluster
+# kubectl get pods -n robot-shop -w
+
+# Make edits to a deployment
+# kubectl edit deployment mongodb -n robot-shop
+
+# Get deployment info on a specific microservice
+# kubectl get deployment mongodb -n robot-shop
+
+
+
+

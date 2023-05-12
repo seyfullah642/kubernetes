@@ -1,0 +1,115 @@
+High Availability
+- High availability for k8s is having more than one main control node. Just like have multiple workers node for our pods/containers,
+the same thing can be applied to the main control node. In this case, we have multiple control nodes.
+
+Stacked etcd
+- ectd runs on the same server/nodes as the control node.
+- kubeadm uses stacked etcd methodology.
+
+External etcd
+- ectd runs on a completely separate node from the control node.
+- in terms of high availability, we can have mutliple nodes with an external etcd that runs on them.
+- You can have any number of control nodes and any number of servers/nodes that etcd.
+
+---
+
+K8s Management tools:
+- these tools interface with k8s to provide additional functionality.
+
+Kubcetl
+- official cmd line interface.
+
+Kubeadm
+- allows you to quickly create clusters.
+
+Minikube
+- similar to kubeadm. It is used for a single-node setup, great for getting up and running quickly for dev purposes.
+
+Helm
+- provides templating and packaging management for objects. It can be used to manage your own templates (aka charts).
+You can also download shared templates.
+
+Kompse
+- helps you to translate docker compose files into k8s objects.
+
+Kustomize
+- this is a configuration management tool for managing k8s object configurations. It allows you to share and re-use
+templated configurations for k8s apps.
+
+---
+
+Safely Draining a K8s node
+- When performing maintenance, you may need to remove a node from service.
+- containers will be gracefully terminated or potentially rescheduled on another node.
+
+CMDS:
+- Drain a node (removes the node). If a daemonsets are pods tied to each node, if one exists then you pass that flag.
+  # kubectl drain <node name>
+
+- Uncordoning a node (reattaches the node). if node remains part of the cluster, you can allow pods to run on the node again 
+  when maintenance is complete.
+  # kubectl uncordon <node name>
+
+---
+
+Upgrading K8s with kubeadm
+
+CMDS:
+
+- Upgrading control node
+  # sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.22.2-00
+  # kubeadm version
+  # kubectl drain k8s-control --ignore-daemonsets
+  # sudo kubeadm upgrade plan v1.22.2
+  # sudo kubeadm upgrade apply v1.22.2
+  # sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.22.2-00 kubectl=1.22.2-00
+  # sudo systemctl daemon-reload -- just incase systemd unit file changed for kubelet
+  # sudo systemctl restart kubelet -- ensure you're running new version
+  # kubectl uncordon k8s-control
+  # kubectl get nodes -- check status
+
+- Upgrading worker nodes
+  # While on the control node, run kubectl drain k8s-worker1 --ignore-daemonsets --force incase there are any other standalone pods.
+  # sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.22.2-00
+  # kubeadm version
+  # sudo kubeadm upgrade node
+  # sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.22.2-00 kubectl=1.22.2-00
+  # sudo systemctl daemon-reload
+  # sudo systemctl restart kubelet
+  # Back to control node kubectl uncordon k8s-worker1
+
+---
+
+Backing up and restoring etcd cluster data
+- etcd store k8s objects, applications, and configurations 
+- etcdctl is the cmd-line tool
+
+CMDS:
+
+- Backing up 
+  # ETCDCTL_API=3 etcdctl snapshot save /home/cloud_user/etcd_backup.db \
+  --endpoints=https://10.0.1.101:2379 \
+  --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \
+  --cert=/home/cloud_user/etcd-certs/etcd-server.crt \
+  --key=/home/cloud_user/etcd-certs/etcd-server.key
+
+  # sudo systemctl stop etcd
+  # sudo rm -rf /var/lib/etcd
+
+- Restoring
+  # ETCDCTL_API=3 etcdctl snapshot restore /home/cloud_user/etcd_backup.db \ 
+  --initial-cluster etcd-restore=https://10.0.1.101:2380 \
+  --initial-advertise-peer-urls https://10.0.1.101:2380 \
+  --name etcd-restore \
+  --data-dir /var/lib/etcd
+
+  # sudo chown -R etcd:etcd /var/lib/etcd
+  # sudo systemctl start etcd
+
+- Get cluster name
+  # ETCDCTL_API=3 etcdctl get cluster.name \
+  --endpoints=https://10.0.1.101:2379 \
+  --cacert=/home/cloud_user/etcd-certs/etcd-ca.pem \
+  --cert=/home/cloud_user/etcd-certs/etcd-server.crt \
+  --key=/home/cloud_user/etcd-certs/etcd-server.key
+

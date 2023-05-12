@@ -1,0 +1,40 @@
+Scheduling
+- Process of assigning Pods to Nodes so kubelets can run them
+
+Scheduler
+- Control plane component that handles scheduling
+
+nodeSelector
+- You can configure a nodeSelector for your Pods to limit which Node(s) the Pod can be
+  scheduled on
+
+nodeName
+- You can bypass scheduling and assign a Pod to a specific Node by name using nodeName
+
+CMDS:
+
+- Label a node
+  # kubectl label nodes k8s-worker2 external-auth-services=true
+
+---
+
+DaemonSets
+- Automatically runs a copy of a pod on each node
+- They will also run a copy of the pod on new nodes as they are added to the cluster
+
+CMDS:
+
+- Get daemonset
+  # kubectl get daemonset
+
+---
+
+Static Pod
+- a pod managed directly by kubelet on a node, not by k8s API server. They can run even
+  if there is no k8s API present.
+- Kubelet automatically creates static pods from yaml manifest files located in the
+  manifest path on the node.
+
+Mirror Pods
+- kubelet will create a mirror pod for each static pod. Mirror pods allow you to see the
+  status of static pod via the k8s API, but you cannot change or manage them via the API

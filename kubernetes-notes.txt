@@ -1,0 +1,16 @@
+# Deployments
+A deployment is responsible for keeping a set of pods running.
+
+# Service
+- A service is responsible for enabling network access to a set of pods.
+- Kubernets has a internal DNS. When creating a service, you can curl using the service name or IP address.
+
+# Microservice
+- It's an application architecture
+- Small, independent services that work together to form a whole application
+- Advantages:
+    - Scalability
+    - Cleaner code
+    - Reliability
+    - Variety of tools
+

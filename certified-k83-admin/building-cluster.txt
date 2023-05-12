@@ -1,0 +1,57 @@
+1  cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+<<overlay
+<<br_netfilter
+<<EOF
+
+    2  sudo modprobe overlay
+    3  sudo modprobe br_netfilter
+    4  cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+<<net.bridge.bridge-nf-call-iptables = 1
+<<net.ipv4.ip_forward = 1
+<<net.bridge.bridge-nf-call-ip6tables = 1
+<<EOF
+
+    5  sudo sysctl --system
+    6  sudo apt-get update && sudo apt-get install -y containerd
+    7  sudo mkdir -p /etc/containerd
+    8  sudo containerd config default | sudo tee /etc/containerd/config.toml
+    9  sudo systemctl restart containerd
+   10  sudo systemctl status containerd
+   11  sudo swappoff -a
+   12  sudo swapoff -a
+   13  sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+   14  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+   15  cat <<EOF | sudo tee /etc/apt/source.list.d/kubernetes.list
+<<deb https://apt.kubernetes.io/ kubernetes-xenial main
+<<EOF
+
+   16  cd /etc/
+   17  ls
+   18  cd ap
+   19  cd apt
+   20  ls
+   21  cd
+   22  cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+<<deb https://apt.kubernetes.io/ kubernetes-xenial main
+<<EOF
+
+   23  sudo apt-get update
+   24  sudo apt-get install -y kubelet=1.24.0-00 kubeadm=1.24.0-00 kubectl=1.24.0-00
+   25  sudo apt-mark hold kubelet kubeadm kubectl
+# Stop at here when installing on the worker nodes
+# Continue below on the control panel (main node)
+   26  history
+   27  clear
+   28  sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.24.0
+   29  mkdir -p $HOME/.kube
+   30  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   31  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   32  kubectl get nodes
+   33  kubectl apply -f https://docs.projectcalico.org/manifest/calico.yaml
+   34  kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+   35  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+   36  kubectl get nodes
+   37  history
+   38  kubeadm token create --print-join-command
+# Copy and paste output and run on worker nodes to add them to the main control panel
+   39  kubectl get nodes
